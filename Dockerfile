@@ -15,7 +15,7 @@ ENV ANDROID_HOME "/tmp/sdk"
 ENV ANDROID_SDK_ROOT "${ANDROID_HOME}"
 
 RUN apk update
-RUN apk add --no-cache bash binutils ca-certificates curl git openssl unzip vim xz --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
+RUN apk add --no-cache binutils ca-certificates curl git openssl unzip --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
 
 WORKDIR /tmp
 RUN curl -o sdk.zip -s https://dl.google.com/android/repository/sdk-tools-linux-${VERSION_SDK_TOOLS}.zip
@@ -47,6 +47,8 @@ ENV ANDROID_HOME "/sdk"
 ENV ANDROID_SDK_ROOT "${ANDROID_SDK_ROOT}"
 ENV PATH "$PATH:${ANDROID_SDK_ROOT}/tools:${ANDROID_HOME}/tools"
 
+RUN apk add --no-cache bash curl git vim xz --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
+
 # as per https://github.com/LennonRuangjaroon/alpine-java8-jdk#--remove-spurious-folders-not-needed-like-jrelib
 RUN rm -rf /opt/jre/lib/plugin.jar \
      /opt/jre/lib/ext/jfxrt.jar \
@@ -65,3 +67,4 @@ RUN rm -rf /opt/jre/lib/plugin.jar \
      /opt/jre/lib/amd64/libjavafx*.so \
      /opt/jre/lib/amd64/libjfx*.so &&\
   rm -rf /var/cache/apk/*
+WORKDIR /
