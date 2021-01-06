@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ $# -gt 1 ]; then
+    curl -s -H 'Content-Type: application/json' --data '{"docker_tag":"nightly"}' -X POST $2
+else
+    curl -s -H 'Content-Type: application/json' --data '{"docker_tag":"latest"}' -X POST $1
+fi
