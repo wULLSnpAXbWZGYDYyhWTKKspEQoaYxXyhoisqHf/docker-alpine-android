@@ -43,6 +43,10 @@ RUN while read -r package; do PACKAGES="${PACKAGES}${package} "; done < ${ANDROI
 
 FROM adoptopenjdk/openjdk11:alpine-slim
 COPY --from=build /tmp/sdk /sdk
+
+# Makes JVM aware of memory limit available to the container (cgroups)
+ENV JAVA_OPTS='-XX:+UseContainerSupport -XX:MaxRAMPercentage=80'
+
 ENV ANDROID_HOME "/sdk"
 ENV ANDROID_SDK_ROOT "${ANDROID_SDK_ROOT}"
 ENV PATH "$PATH:${ANDROID_SDK_ROOT}/tools:${ANDROID_HOME}/tools"
