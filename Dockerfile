@@ -50,8 +50,24 @@ ENV JAVA_OPTS='-XX:+UseContainerSupport -XX:MaxRAMPercentage=80'
 ENV ANDROID_HOME "/sdk"
 ENV ANDROID_SDK_ROOT "${ANDROID_SDK_ROOT}"
 ENV PATH "$PATH:${ANDROID_SDK_ROOT}/tools:${ANDROID_HOME}/tools"
+ENV ASDF_VERSION "v0.6.3"
+ENV GRADLE_VERSION "6.8-rc-5"
 
 RUN apk add --no-cache bash curl git vim xz --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
+
+# gradle pls
+RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch ${ASDF_VERSION} \
+    && sed -i 's/\/bin\/ash/\/bin\/bash/' /etc/passwd && cat /etc/passwd \
+    && echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc \
+    && echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc \
+    && bash -c ". ~/.bashrc; ~/.asdf/bin/asdf plugin-add gradle https://github.com/rfrancis/asdf-gradle.git" \
+    && bash -c ". ~/.bashrc; ~/.asdf/bin/asdf install gradle ${GRADLE_VERSION}" \
+    && bash -c ". ~/.bashrc; ~/.asdf/bin/asdf global gradle ${GRADLE_VERSION}" \
+    && bash -c ". ~/.bashrc; ~/.asdf/shims/gradle --version"
+
+RUN ln -svf /bin/bash /bin/sh \
+    && ls -la /bin/*sh \
+    && echo -e "\n. ~/.bashrc" >> ~/.bash_profile
 
 # as per https://github.com/LennonRuangjaroon/alpine-java8-jdk#--remove-spurious-folders-not-needed-like-jrelib
 RUN rm -rf /opt/jre/lib/plugin.jar \
