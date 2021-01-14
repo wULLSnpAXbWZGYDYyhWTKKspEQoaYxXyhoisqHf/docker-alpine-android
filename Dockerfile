@@ -1,12 +1,12 @@
 FROM frolvlad/alpine-java:jdk8-full as build
-MAINTAINER wanderer <wanderer at git.dotya.ml>
 ARG BUILD_DATE
 ARG VCS_REF
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.vcs-url="https://git.dotya.ml/wanderer/docker-alpine-android.git" \
       org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.license=GPL-3.0
+      org.label-schema.license=GPL-3.0 \
+      org.label-schema.vendor="wanderer <wanderer at git.dotya.ml>"
 
 ENV VERSION_SDK_TOOLS "3859397"
 ENV VERSION_TOOLS "6609375"
