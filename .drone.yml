@@ -28,3 +28,23 @@ trigger:
   event:
   - push
   - cron
+
+---
+kind: pipeline
+type: docker
+name: kaniko-build
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: build
+  pull: always
+  image: banzaicloud/drone-kaniko
+  settings:
+    dockerfile: Dockerfile
+    context: .
+
+depends_on:
+- dockerhub-build-trigger
