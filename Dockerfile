@@ -87,4 +87,8 @@ RUN rm -rf /opt/jre/lib/plugin.jar \
      /opt/jre/lib/amd64/libjavafx*.so \
      /opt/jre/lib/amd64/libjfx*.so &&\
   rm -rf /var/cache/apk/*
+
 WORKDIR /
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
