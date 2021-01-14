@@ -1,5 +1,6 @@
 ---
 kind: pipeline
+type: docker
 name: dockerhub-build-trigger
 
 platform:
@@ -9,13 +10,6 @@ platform:
 clone:
   disable: true
 
-trigger:
-  branch:
-    - master
-  event:
-    - push
-    - cron
-
 steps:
 - name: call webhook
   pull: always
@@ -24,6 +18,13 @@ steps:
     ENDPOINT:
       from_secret: DOCKERHUB_ENDPOINT
   commands:
-    - apk add --no-cache curl
-    - curl -sO https://git.dotya.ml/${DRONE_REPO}/raw/branch/master/curl.it
-    - bash ./curl.it $ENDPOINT
+  - apk add --no-cache curl
+  - curl -sO https://git.dotya.ml/${DRONE_REPO}/raw/branch/master/curl.it
+  - bash ./curl.it $ENDPOINT
+
+trigger:
+  branch:
+  - master
+  event:
+  - push
+  - cron
