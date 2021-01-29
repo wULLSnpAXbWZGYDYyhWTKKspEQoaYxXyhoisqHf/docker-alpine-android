@@ -36,10 +36,10 @@ ADD packages.txt ${ANDROID_SDK_ROOT}
 RUN mkdir -p /$(whoami)/.android
 RUN touch /$(whoami)/.android/repositories.cfg
 
-RUN yes | ${ANDROID_SDK_ROOT}/tools/bin/sdkmanager --licenses
-RUN ${ANDROID_SDK_ROOT}/tools/bin/sdkmanager --update
+RUN yes | ${ANDROID_SDK_ROOT}/tools/bin/sdkmanager --verbose --licenses
+RUN ${ANDROID_SDK_ROOT}/tools/bin/sdkmanager --verbose --update
 
-RUN while read -r package; do PACKAGES="${PACKAGES}${package} "; done < ${ANDROID_SDK_ROOT}/packages.txt && ${ANDROID_SDK_ROOT}/tools/bin/sdkmanager ${PACKAGES}
+RUN while read -r package; do PACKAGES="${PACKAGES}${package} "; done < ${ANDROID_SDK_ROOT}/packages.txt && ${ANDROID_SDK_ROOT}/tools/bin/sdkmanager --verbose ${PACKAGES}
 
 FROM adoptopenjdk/openjdk11:alpine-slim
 COPY --from=build /tmp/sdk /sdk
