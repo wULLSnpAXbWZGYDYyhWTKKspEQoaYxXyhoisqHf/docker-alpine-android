@@ -51,7 +51,7 @@ ENV ANDROID_HOME "/sdk"
 ENV ANDROID_SDK_ROOT "${ANDROID_SDK_ROOT}"
 ENV PATH "$PATH:${ANDROID_SDK_ROOT}/tools:${ANDROID_HOME}/tools"
 ENV ASDF_VERSION "v0.8.0"
-ENV GRADLE_VERSION "6.8.1"
+ENV GRADLE_VERSION "7.0-milestone-1"
 
 RUN apk add --no-cache bash curl git vim xz --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
 
