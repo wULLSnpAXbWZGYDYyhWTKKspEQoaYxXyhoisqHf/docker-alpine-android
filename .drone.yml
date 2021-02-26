@@ -41,7 +41,7 @@ platform:
 steps:
 - name: build
   pull: always
-  image: banzaicloud/drone-kaniko
+  image: ghcr.io/finitum/drone-kaniko:0.8.1
   settings:
     dockerfile: Dockerfile
     context: .
