@@ -41,7 +41,7 @@ platform:
 steps:
 - name: build
   pull: always
-  image: ghcr.io/finitum/drone-kaniko:0.8.2
+  image: immawanderer/drone-kaniko:efd19c50
   settings:
     dockerfile: Dockerfile
     context: .
