@@ -1,50 +1,62 @@
 ---
 kind: pipeline
 type: docker
-name: dockerhub-build-trigger
+name: testing
 
 platform:
   os: linux
   arch: amd64
 
-clone:
-  disable: true
-
 steps:
-- name: call webhook
+- name: hadolint
   pull: always
-  image: bash:latest
-  environment:
-    ENDPOINT:
-      from_secret: DOCKERHUB_ENDPOINT
+  image: hadolint/hadolint:v1.23.0-8-gb01c5a9-alpine
   commands:
-  - apk add --no-cache curl
-  - curl -sO https://git.dotya.ml/${DRONE_REPO}/raw/branch/master/curl.it
-  - bash ./curl.it $ENDPOINT
+  - hadolint --version
+  - hadolint Dockerfile
+  when:
+    ref:
+    - refs/heads/master
+    - "refs/heads/feature-**"
+    - "refs/pull/**"
+    - "refs/tags/**"
+    event:
+      exclude: [cron]
 
-trigger:
-  branch:
-  - master
-  event:
-  - push
-  - cron
-
----
-kind: pipeline
-type: docker
-name: kaniko-build
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: build
+- name: kaniko-build
   pull: always
   image: immawanderer/drone-kaniko:efd19c50
   settings:
     dockerfile: Dockerfile
     context: .
+  when:
+    ref:
+    - "refs/heads/feature-**"
+    - "refs/pull/**"
+    - "refs/tags/**"
+    event:
+      exclude: [cron]
 
-depends_on:
-- dockerhub-build-trigger
+- name: kaniko-publish
+  pull: always
+  image: immawanderer/drone-kaniko:efd19c50
+  settings:
+    dockerfile: Dockerfile
+    context: .
+    tags:
+    - latest
+    - linux-amd64
+    - ${DRONE_COMMIT_SHA:0:8}
+    repo: immawanderer/alpine-android
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+  when:
+    ref:
+    - refs/heads/master
+    event:
+      exclude: [pull_request, tag]
+trigger:
+  event: [push, pull_request, cron, tag]
+

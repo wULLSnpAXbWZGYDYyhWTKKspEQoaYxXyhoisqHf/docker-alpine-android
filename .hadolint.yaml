@@ -1,0 +1,15 @@
+ignored:
+  # ad "SC2028" we actually want that here
+  - SC2028
+  # ad "DL4006" no luck - sh doesn't know `set -o pipefail`
+  - DL4006
+  # ad "DL3018" ignore recommendation to pin apk package versions
+  - DL3018
+  # ad "SC2016" we actually don't want that here and now
+  - SC2016
+  # ad "SC2039" that still works
+  - SC2039
+  # ad "DL4005" TODO - set SHELL
+  - DL4005
+  # ad "SC2086" precisely that one cannot be quoted
+  - SC2086
