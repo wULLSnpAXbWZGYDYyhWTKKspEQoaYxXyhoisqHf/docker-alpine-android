@@ -25,7 +25,7 @@ steps:
 
 - name: kaniko-build
   pull: always
-  image: immawanderer/drone-kaniko:efd19c50
+  image: immawanderer/drone-kaniko:linux-amd64
   settings:
     dockerfile: Dockerfile
     context: .
@@ -39,7 +39,7 @@ steps:
 
 - name: kaniko-publish
   pull: always
-  image: immawanderer/drone-kaniko:efd19c50
+  image: immawanderer/drone-kaniko:linux-amd64
   settings:
     dockerfile: Dockerfile
     context: .
