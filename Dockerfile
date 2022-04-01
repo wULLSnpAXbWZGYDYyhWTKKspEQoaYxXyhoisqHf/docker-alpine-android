@@ -19,32 +19,32 @@ ENV VERSION_TOOLS "6609375"
 ENV ANDROID_HOME "/tmp/sdk"
 ENV ANDROID_SDK_ROOT "${ANDROID_HOME}"
 
-RUN apk update
-RUN apk add --no-cache binutils ca-certificates curl git openssl unzip --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
-
 WORKDIR /tmp
-RUN curl -o sdk.zip -s https://dl.google.com/android/repository/sdk-tools-linux-"${VERSION_SDK_TOOLS}".zip
-RUN unzip ./sdk.zip -d "${ANDROID_HOME}"
-RUN rm -f ./sdk.zip
-
-RUN curl -o tools.zip -s https://dl.google.com/android/repository/commandlinetools-linux-"${VERSION_TOOLS}"_latest.zip \
+RUN apk update && \
+    apk add --no-cache binutils ca-certificates curl git openssl unzip --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing && \
+    \
+    curl -o sdk.zip -s https://dl.google.com/android/repository/sdk-tools-linux-"${VERSION_SDK_TOOLS}".zip && \
+    unzip ./sdk.zip -d "${ANDROID_HOME}" && \
+    rm -f ./sdk.zip && \
+    \
+    curl -o tools.zip -s https://dl.google.com/android/repository/commandlinetools-linux-"${VERSION_TOOLS}"_latest.zip \
  && mkdir -p "${ANDROID_HOME}"/cmdline-tools \
  && unzip ./tools.zip -d "${ANDROID_HOME}"/cmdline-tools \
- && rm -v ./tools.zip
-
-RUN mkdir -p $ANDROID_HOME/licenses/ \
+ && rm -v ./tools.zip && \
+ \
+ mkdir -p $ANDROID_HOME/licenses/ \
  && echo "8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a63b6825ea9c5514f83c2829b004d1fee" > $ANDROID_HOME/licenses/android-sdk-license \
  && echo "84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c0de7af1a06de9f4b1727b84351f2910" > $ANDROID_HOME/licenses/android-sdk-preview-license \
  && yes | ${ANDROID_HOME}/cmdline-tools/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses >/dev/null
 
 COPY packages.txt "${ANDROID_HOME}"
-RUN mkdir -p /"$(whoami)"/.android
-RUN touch /"$(whoami)"/.android/repositories.cfg
-
-RUN yes | "${ANDROID_HOME}"/tools/bin/sdkmanager --verbose --licenses
-RUN "${ANDROID_HOME}"/tools/bin/sdkmanager --verbose --update
-
-RUN while read -r package; do PACKAGES="${PACKAGES}${package} "; done < "${ANDROID_HOME}"/packages.txt && ${ANDROID_HOME}/tools/bin/sdkmanager --verbose ${PACKAGES}
+RUN mkdir -p /"$(whoami)"/.android && \
+    touch /"$(whoami)"/.android/repositories.cfg && \
+    \
+    yes | "${ANDROID_HOME}"/tools/bin/sdkmanager --verbose --licenses && \
+    "${ANDROID_HOME}"/tools/bin/sdkmanager --verbose --update && \
+    \
+    while read -r package; do PACKAGES="${PACKAGES}${package} "; done < "${ANDROID_HOME}"/packages.txt && ${ANDROID_HOME}/tools/bin/sdkmanager --verbose ${PACKAGES}
 
 FROM adoptopenjdk/openjdk11:alpine-slim
 COPY --from=build /tmp/sdk /sdk
@@ -58,19 +58,17 @@ ENV PATH "$PATH:${ANDROID_HOME}/tools"
 ENV ASDF_VERSION "v0.8.1"
 ENV GRADLE_VERSION "7.1"
 
-RUN apk add --no-cache bash curl git vim xz --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
-
-# gradle pls
-RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch "${ASDF_VERSION}" \
+RUN apk add --no-cache bash curl git vim xz --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+    && git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch "${ASDF_VERSION}" \
     && sed -i 's/\/bin\/ash/\/bin\/bash/' /etc/passwd && cat /etc/passwd \
     && echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc \
     && echo -e '\n. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc \
     && bash -c ". ~/.bashrc; ~/.asdf/bin/asdf plugin-add gradle https://github.com/rfrancis/asdf-gradle.git" \
     && bash -c ". ~/.bashrc; ~/.asdf/bin/asdf install gradle ${GRADLE_VERSION}" \
     && bash -c ". ~/.bashrc; ~/.asdf/bin/asdf global gradle ${GRADLE_VERSION}" \
-    && bash -c ". ~/.bashrc; ~/.asdf/shims/gradle --version"
-
-RUN ln -svf /bin/bash /bin/sh \
+    && bash -c ". ~/.bashrc; ~/.asdf/shims/gradle --version" && \
+    \
+    ln -svf /bin/bash /bin/sh \
     && ls -la /bin/*sh \
     && echo -e "\n. ~/.bashrc" >> ~/.bash_profile
 
