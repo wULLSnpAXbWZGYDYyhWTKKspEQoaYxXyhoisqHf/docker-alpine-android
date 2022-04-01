@@ -8,7 +8,9 @@ dargskaniko = run --rm -it -w=$(kanikowdir) -v $$PWD:$(kanikowdir)
 kanikoexecutorimg = gcr.io/kaniko-project/executor:v1.8.0-debug
 kanikowdir = /src
 kanikocontext = .
-kanikoargs = -f=$(dfile) -c=$(kanikocontext) --use-new-run --snapshotMode=redo --no-push --force
+kanikoargs = -f=$(dfile) -c=$(kanikocontext) --use-new-run --snapshotMode=redo --build-arg BUILD_DATE=$(build_date) --build-arg VCS_REF=$(vcs_ref) --no-push
+vcs_ref = $$(git rev-parse --short HEAD)
+build_date= $$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 .PHONY: build kaniko clean test prune
 
