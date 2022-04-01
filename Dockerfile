@@ -3,7 +3,7 @@
 #   https://docs.docker.com/develop/develop-images/build_enhancements/#overriding-default-frontends
 #   https://pythonspeed.com/articles/docker-buildkit/
 
-FROM frolvlad/alpine-java:jdk8-full as build
+FROM docker.io/frolvlad/alpine-java:jdk8-full as build
 ARG BUILD_DATE
 ARG VCS_REF
 
@@ -46,7 +46,7 @@ RUN mkdir -p /"$(whoami)"/.android && \
     \
     while read -r package; do PACKAGES="${PACKAGES}${package} "; done < "${ANDROID_HOME}"/packages.txt && ${ANDROID_HOME}/tools/bin/sdkmanager --verbose ${PACKAGES}
 
-FROM adoptopenjdk/openjdk11:alpine-slim
+FROM docker.io/adoptopenjdk/openjdk11:alpine-slim
 COPY --from=build /tmp/sdk /sdk
 
 # Makes JVM aware of memory limit available to the container (cgroups)
