@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.2
+# syntax=docker/dockerfile:1.3
 # refs:
 #   https://docs.docker.com/develop/develop-images/build_enhancements/#overriding-default-frontends
 #   https://pythonspeed.com/articles/docker-buildkit/
