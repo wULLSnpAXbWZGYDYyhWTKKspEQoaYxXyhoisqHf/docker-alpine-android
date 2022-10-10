@@ -1,4 +1,4 @@
-build-tools;33.0.0-rc2
+build-tools;33.0.0
 extras;android;m2repository
 extras;google;m2repository
 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2
